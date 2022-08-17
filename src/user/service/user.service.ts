@@ -56,6 +56,12 @@ export class UserService {
       }
 
       const connect = this.connection();
+      const sqlSelectUser = 'select * from masteruser where username=($1)';
+      const resultUser = (await connect).query(sqlSelectUser, [user.username]);
+      const userDb = (await resultUser).rows[0] as UserModel;
+      if(userDb){
+        return { data: null, status: 400, message: 'Username already exists' };
+      }
       const sql =
         'INSERT INTO masteruser(username, password, firstname,lastname) VALUES($1, $2, $3,$4) RETURNING *';
       const hash = bcrypt.hashSync(user.password + 's04$$w0rD', 10);
