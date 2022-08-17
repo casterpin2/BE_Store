@@ -37,14 +37,14 @@ Project : Store Store application. There are features such as CRUD products,CURD
 - Run `npm run lint` to execute the Eslint
 
 ##### Usage PostMan
-http://localhost:3000/user/create - Create user.
-http://localhost:3000/user/login - login unser.
-http://localhost:3000/user/show - show all user.
-http://localhost:3000/user/index - get current user with token.
-http://localhost:3000/product/create -create product.
-http://localhost:3000/product/show - show all product.
-http://localhost:3000/product/index/:id - get detail product (:id- id of product).
-http://localhost:3000/order/create - create order.
-http://localhost:3000/order/detail -detail order with user token.
+- http://localhost:3000/user/create - Create user.
+- http://localhost:3000/user/login - login unser.
+- http://localhost:3000/user/show - show all user.
+- http://localhost:3000/user/index - get current user with token.
+- http://localhost:3000/product/create -create product.
+- http://localhost:3000/product/show - show all product.
+- http://localhost:3000/product/index/:id - get detail product (:id- id of product).
+- http://localhost:3000/order/create - create order.
+- http://localhost:3000/order/detail -detail order with user token.
 ###### Contact
 TuyenNN - tuyennn0209@gmail.com
