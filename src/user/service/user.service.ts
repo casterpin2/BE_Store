@@ -21,10 +21,8 @@ export class UserService {
       }
       const connect = this.connection();
       const sql = 'select * from masteruser where username=($1)';
-
       const result = (await connect).query(sql, [user.username]);
       const userDb = (await result).rows[0] as UserModel;
-
       (await connect).release();
 
       if (!userDb) {
@@ -59,12 +57,12 @@ export class UserService {
 
       const connect = this.connection();
       const sql =
-        'INSERT INTO masteruser(username, password, firstName,lastName) VALUES($1, $2, $3,$4) RETURNING *';
+        'INSERT INTO masteruser(username, password, firstname,lastname) VALUES($1, $2, $3,$4) RETURNING *';
       const hash = bcrypt.hashSync(user.password + 's04$$w0rD', 10);
 
       (await connect).query(sql, [user.username, hash, user.firstName, user.lastName]);
       (await connect).release();
-
+    
       return { data: {}, status: 200, message: 'successfully' };
     } catch (ex: any) {
       console.log(ex);
@@ -73,6 +71,7 @@ export class UserService {
   }
 
   public validatorUser(user: UserModel) {
+    
     if (!user.username) {
       return { data: {}, status: 400, message: 'Username is empty' };
     }

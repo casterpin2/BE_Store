@@ -8,13 +8,13 @@
     "db-down": "db-migrate reset  -e dev",
     "db-up": "db-migrate up  -e dev",
     "test-up": "db-migrate up -e test",
-    "test": "npm run build && npm run test-up && cross-env NODE_ENV=test jasmine && db-migrate reset  -e test",
+    "test-down":"db-migrate reset  -e test",
+    "test": "npm run build && db-migrate reset  -e test && npm run test-up && cross-env NODE_ENV=test jasmine && db-migrate reset  -e test",
     "build": "npx tsc",
     "start": "nodemon src/app.ts",
     "lint": "eslint . --ext .ts --fix",
     "prettier": "prettier --config .prettierrc.json src/**/*.ts* --write ",
-    "watch": "tsc-watch --onSuccess \"node ./dist/app.js\"",
-    "ba": "SET NODE_ENV=test"
+    "watch": "tsc-watch --onSuccess \"node ./dist/app.js\""
   },
   "author": "",
   "license": "ISC",

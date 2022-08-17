@@ -1,9 +1,9 @@
-import { PagingModel } from '../../constant/response.constant';
-import { Auth } from '../../jwt/auth';
-import { ProductService } from '../../product/service/product.service';
-import { UserService } from '../../user/service/user.service';
-import { OrderModel } from '../entities/order.model';
-import { OrderService } from '../service/order.service';
+import { PagingModel } from '../../../constant/response.constant';
+import { Auth } from '../../../jwt/auth';
+import { ProductService } from '../../../product/service/product.service';
+import { UserService } from '../../../user/service/user.service';
+import { OrderModel } from '../../entities/order.model';
+import { OrderService } from '../../service/order.service';
 
 const orderService = new OrderService();
 const productService = new ProductService();

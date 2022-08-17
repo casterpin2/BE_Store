@@ -1,8 +1,8 @@
 import supertest from 'supertest';
-import app from '../../app';
-import { PagingModel } from '../../constant/response.constant';
-import { UserModel } from '../../user/entities/user.model';
-import { ProductModel } from '../entities/product.model';
+import app from '../../../app';
+import { PagingModel } from '../../../constant/response.constant';
+import { UserModel } from '../../../user/entities/user.model';
+import { ProductModel } from '../../entities/product.model';
 
 const request = supertest(app);
 describe('Product Api', () => {

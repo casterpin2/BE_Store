@@ -18,6 +18,7 @@ export class UserController {
         firstName: req.body.firstName as string,
         lastName: req.body.lastName as string,
       } as UserModel;
+    
       const response = await this.createUser(service, requestBody);
       ResponseHandel.modifyResponse(response, res);
     });

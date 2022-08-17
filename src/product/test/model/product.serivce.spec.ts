@@ -1,7 +1,7 @@
-import { PagingModel } from '../../constant/response.constant';
-import { Auth } from '../../jwt/auth';
-import { ProductModel } from '../entities/product.model';
-import { ProductService } from '../service/product.service';
+import { PagingModel } from '../../../constant/response.constant';
+import { Auth } from '../../../jwt/auth';
+import { ProductModel } from '../../entities/product.model';
+import { ProductService } from '../../service/product.service';
 
 const productService = new ProductService();
 const auth = new Auth();

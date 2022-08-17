@@ -2,9 +2,9 @@
 CREATE EXTENSION "uuid-ossp";
 CREATE TABLE masteruser(
     id uuid not null DEFAULT uuid_generate_v4(),
-    username VARCHAR(50) not null,
-    password VARCHAR(50) not null,
-    firstName VARCHAR(50) not null,
-    lastName VARCHAR(50) not null,
+    username text not null,
+    password text not null,
+    firstName text not null,
+    lastName text not null,
     PRIMARY KEY (id)
 )

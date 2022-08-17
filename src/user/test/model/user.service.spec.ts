@@ -1,6 +1,6 @@
-import { Auth } from '../../jwt/auth';
-import { UserModel } from '../entities/user.model';
-import { UserService } from '../service/user.service';
+import { Auth } from '../../../jwt/auth';
+import { UserModel } from '../../entities/user.model';
+import { UserService } from '../../service/user.service';
 
 const userService = new UserService();
 const auth = new Auth();
