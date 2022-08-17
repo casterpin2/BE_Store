@@ -35,7 +35,8 @@ Project : Store Store application. There are features such as CRUD products,CURD
 
 ## Run Lint
 - Run `npm run lint` to execute the Eslint
-
+## ENV
+- You can change the port to match the postgres db settings (.env file)
 ##### Usage PostMan
 - http://localhost:3000/user/create - Create user.
 - http://localhost:3000/user/login - login unser.
