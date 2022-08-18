@@ -20,7 +20,8 @@ Project : Store Store application. There are features such as CRUD products,CURD
     `\c store_test`
     `GRANT ALL PRIVILEGES ON DATABASE store_test TO tuyennn;`
 ## Migrate Database
-- Run `npm run db-up` for db dev
+- Run `npm run db-up` mirgate for db dev
+- Run `npm run db-down`rest migrate for db dev
 - Run `npm run test-up` for db test
 
 ## Run Project
