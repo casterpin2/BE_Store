@@ -3,7 +3,7 @@ import app from '../../../app';
 import { PagingModel } from '../../../constant/response.constant';
 import { ProductModel } from '../../../product/entities/product.model';
 import { UserModel } from '../../../user/entities/user.model';
-import { OrderModel } from '../../entities/order.model';
+import { OrderModel, OrderPayLoadModel } from '../../entities/order.model';
 
 const request = supertest(app);
 describe('Order Api', () => {
@@ -26,7 +26,7 @@ describe('Order Api', () => {
       .post('/user/login')
       .set('Accept', 'application/json')
       .send(user);
-   
+
     const token = loginUser.body.data as string;
     //create product
     await request.post('/product/create').set('Authorization', `Bearer ${token}`).send(requestBody);
@@ -35,8 +35,8 @@ describe('Order Api', () => {
     const productAll = await request.post('/product/show').send(pageModel);
     const orderModel = {
       quantity: 100,
-      product_id: productAll.body.data.items[0].id as string,
-    } as OrderModel;
+      productId: productAll.body.data.items[0].id as string,
+    } as OrderPayLoadModel;
     const res = await request
       .post('/order/create')
       .set('Authorization', `Bearer ${token}`)

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import connection from '../../database';
 import { ResponseViewModel } from '../../constant/response.constant';
-import { OrderModel } from '../entities/order.model';
+import { OrderModel, OrderViewModel, ProductOrder } from '../entities/order.model';
 import { ProductModel } from '../../product/entities/product.model';
 import { PoolClient } from 'pg';
 
@@ -12,27 +12,41 @@ export class OrderService {
     return conn;
   }
   public async create(order: OrderModel): Promise<ResponseViewModel> {
-    try {
-      const connect = this.connection();
-      const updateOrder = await this.updateQuantity(
-        connect,
-        order.quantity,
-        order.user_id,
-        order.product_id
-      );
-      if (updateOrder) {
-        return { data: {}, status: 200, message: 'successfully' };
-      } else {
+    const connect = this.connection();
+    const updateOrder = await this.updateQuantity(
+      connect,
+      order.quantity,
+      order.user_id,
+      order.product_id
+    );
+    if (updateOrder) {
+      return { data: {}, status: 200, message: 'successfully' };
+    } else {
+      try{
+        (await connect).query('BEGIN');
         const sql = `INSERT INTO order_store(
-                    product_id, user_id, quantity, status) VALUES($1, $2,$3,$4) RETURNING *`;
-        await (await connect).query(sql, [order.product_id, order.user_id, order.quantity, 1]);
-        await (await connect).release();
-
+                   user_id, status) VALUES($1, $2) RETURNING *`;
+        const resultOrder = (await connect).query(sql, [order.user_id,1]);
+        const orderResponse = (await resultOrder).rows[0] as OrderModel;
+        const sqlProductOrder = `INSERT INTO product_order(
+          product_id, order_id, quantity)
+          VALUES ( $1, $2,$3) RETURNING *`;
+  
+        const resultProductOrder = await (await connect).query(sqlProductOrder, [order.product_id,orderResponse.id,order.quantity]);
+        const orderOrderProduct = (await resultProductOrder).rows[0] as ProductOrder;
+   
+        if(!orderOrderProduct){
+          throw Error();
+        }
+        (await connect).query('COMMIT');
+        (await connect).release();
+  
         return { data: {}, status: 200, message: 'successfully' };
+      }catch(error){
+        console.log(error);
+        (await connect).query('ROLLBACK');
+        return { data: [], status: 500, message: 'Internal Server' };
       }
-    } catch (ex: any) {
-      console.log(ex);
-      return { data: [], status: 500, message: 'Internal Server' };
     }
   }
   public async updateQuantity(
@@ -41,26 +55,37 @@ export class OrderService {
     userId: string,
     productId: string
   ) {
-    const order = await this.orderOfUser(connect, userId, productId);
+    try{
+    
+      const order = await this.orderOfUser(connect, userId, productId);
 
-    if (order) {
-      const sql = `UPDATE order_store
-            SET  quantity=($1)
-            WHERE user_id=($2) and product_id=($3) RETURNING *`;
-      const result = (await connect).query(sql, [order.quantity + quantity, userId, productId]);
-      const orderResponse = (await result).rows[0] as OrderModel;
-      if (orderResponse) {
-        return true;
+      if (order) {
+        (await connect).query('BEGIN');
+        const sql = `UPDATE product_order
+              SET  quantity=($1)
+              WHERE id=($2) RETURNING *`;
+        const result = (await connect).query(sql, [order.quantity + quantity,order.id]);
+        const orderResponse = (await result).rows[0] as OrderModel;
+        if (orderResponse) {
+          return true;
+        }
+        (await connect).query('COMMIT');
       }
+    }catch(error){
+      console.log(error);
+      (await connect).query('ROLLBACK');
+      return false;
     }
+    
 
-    return false;
+   
   }
   public async orderOfUser(connect: Promise<PoolClient>, userId: string, productId: string) {
-    const sql = `SELECT id, product_id, user_id, quantity, status
-        FROM order_store where user_id=($1) and product_id=($2)`;
+    const sql = `select po.id ,os.id as OrderId,p.id as ProductId,p.name as ProductName,po.quantity as Quantity,os.status as Status from product_order po 
+    join product p on p.id = po.product_id 
+    join order_store os on os.id = po.order_id where os.user_id =($1) and po.product_id =($2)`;
     const result = (await connect).query(sql, [userId, productId]);
-    const orderResponse = (await result).rows[0] as OrderModel;
+    const orderResponse = (await result).rows[0] as OrderViewModel;
     return orderResponse;
   }
 
@@ -69,27 +94,27 @@ export class OrderService {
       if (!userId) {
         return { data: [], status: 500, message: 'Internal Server' };
       }
-
       const connect = this.connection();
-
-      const sql = `SELECT id, product_id, user_id, quantity, status
-            FROM public.order_store where user_id = ($1)`;
+      const sql = `select os.id as OrderId,p.id as ProductId,p.name as ProductName,po.quantity as Quantity,os.status as Status from product_order po 
+      join product p on p.id = po.product_id 
+      join order_store os on os.id = po.order_id where os.user_id =($1)`;
       const result = (await connect).query(sql, [userId]);
-      const orderResponse = (await result).rows;
+      const orderResponse = (await result).rows as OrderViewModel[];
 
       (await connect).release();
       orderResponse.forEach((item) => {
         switch (item.status) {
           case 1:
-            item.status = 'Active';
+            item.statusName = 'Active';
             break;
           case 2:
-            item.status = 'Completed';
+            item.statusName = 'Completed';
             break;
         }
       });
       return { data: orderResponse, status: 200, message: 'successfully' };
     } catch (ex: any) {
+      console.log(ex);
       return { data: [], status: 500, message: 'Internal Server' };
     }
   }

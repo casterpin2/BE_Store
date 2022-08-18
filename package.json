@@ -9,7 +9,7 @@
     "db-up": "db-migrate up  -e dev",
     "test-up": "db-migrate up -e test",
     "test-down":"db-migrate reset  -e test",
-    "test": "npm run build && db-migrate reset  -e test && npm run test-up && cross-env NODE_ENV=test jasmine && db-migrate reset  -e test",
+    "test": "npm run build && db-migrate reset -e test && npm run test-up && cross-env NODE_ENV=test jasmine && db-migrate reset  -e test",
     "build": "npx tsc",
     "start": "nodemon src/app.ts",
     "lint": "eslint . --ext .ts --fix",

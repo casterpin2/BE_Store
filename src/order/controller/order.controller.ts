@@ -13,6 +13,7 @@ export class OrderController {
     const service = new OrderService();
     const auth = new Auth();
     app.post('/order/create', auth.authMiddleware, async (req, res: Response) => {
+    
       const requestBody = {
         quantity: req.body.quantity as number,
         product_id: req.body.productId as string,
