@@ -43,9 +43,8 @@ export class OrderService {
   
         return { data: {}, status: 200, message: 'successfully' };
       }catch(error){
-        console.log(error);
         (await connect).query('ROLLBACK');
-        return { data: [], status: 500, message: 'Internal Server' };
+        throw new Error(`Create Order failed. Error: `+error);
       }
     }
   }
@@ -72,9 +71,10 @@ export class OrderService {
         (await connect).query('COMMIT');
       }
     }catch(error){
-      console.log(error);
+   
       (await connect).query('ROLLBACK');
-      return false;
+      throw new Error(`Update quantity Order failed. Error: `+error);
+      
     }
     
 
@@ -114,8 +114,7 @@ export class OrderService {
       });
       return { data: orderResponse, status: 200, message: 'successfully' };
     } catch (ex: any) {
-      console.log(ex);
-      return { data: [], status: 500, message: 'Internal Server' };
+      throw new Error(`Get Order detail failed. Error: `+ex);
     }
   }
 }

@@ -21,7 +21,7 @@ export class ProductService {
 
       return { data: product, status: 200, message: 'successfully' };
     } catch (ex: any) {
-      return { data: [], status: 500, message: 'Internal Server' };
+      throw new Error(`Could not create product. Error: `+ex);
     }
   }
   public async update(product: ProductModel): Promise<ResponseViewModel> {
@@ -42,7 +42,7 @@ export class ProductService {
 
       return { data: product, status: 200, message: 'successfully' };
     } catch (ex: any) {
-      return { data: [], status: 500, message: 'Internal Server' };
+      throw new Error(`Could not update product. Error: `+ex);
     }
   }
   public async getAll(model: PagingModel): Promise<ResponseViewModel> {
@@ -68,13 +68,13 @@ export class ProductService {
       };
       return { data: response, status: 200, message: 'successfully' };
     } catch (ex: any) {
-      return { data: [], status: 500, message: 'Internal Server' };
+      throw new Error(`Could not get all product. Error: `+ex);
     }
   }
   public async getDetail(id: string): Promise<ResponseViewModel> {
     try {
       if (!id) {
-        return { data: [], status: 500, message: 'Internal Server' };
+        return { data: [], status: 404, message: 'Product is not found' };
       }
 
       const connect = this.connection();
@@ -89,7 +89,7 @@ export class ProductService {
 
       return { data: productDb, status: 200, message: 'successfully' };
     } catch (ex: any) {
-      return { data: [], status: 500, message: 'Internal Server' };
+      throw new Error(`Could not get detail product. Error: `+ex);
     }
   }
 }

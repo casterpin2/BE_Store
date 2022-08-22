@@ -20,8 +20,8 @@ export class UserService {
         return objectEmpty;
       }
       const connect = this.connection();
-      const sql = 'select * from masteruser where username=($1)';
-      const result = (await connect).query(sql, [user.username]);
+      const sql = 'select id,username, password, firstname,lastname from masteruser where username=($1)';
+      const result = (await connect).query(sql, [user.username]) ;
       const userDb = (await result).rows[0] as UserModel;
       (await connect).release();
 
@@ -43,7 +43,8 @@ export class UserService {
         return { data: null, status: 400, message: 'Username or Password not correct' };
       }
     } catch (ex) {
-      return { data: null, status: 500, message: 'Internal Server' };
+      throw new Error(`Could not login with user. Error: `+ex);
+     
     }
   }
   public async createUser(user: UserModel): Promise<ResponseViewModel> {
@@ -56,7 +57,7 @@ export class UserService {
       }
 
       const connect = this.connection();
-      const sqlSelectUser = 'select * from masteruser where username=($1)';
+      const sqlSelectUser = 'select id,username, password, firstname,lastname from masteruser where username=($1)';
       const resultUser = (await connect).query(sqlSelectUser, [user.username]);
       const userDb = (await resultUser).rows[0] as UserModel;
       if(userDb){
@@ -70,9 +71,8 @@ export class UserService {
       (await connect).release();
     
       return { data: {}, status: 200, message: 'successfully' };
-    } catch (ex: any) {
-      console.log(ex);
-      return { data: [], status: 500, message: 'Internal Server' };
+    } catch (err: any) {
+      throw new Error(`Could not create user. Error: `+err);
     }
   }
 
@@ -91,7 +91,7 @@ export class UserService {
       dotenv.config();
 
       const connect = this.connection();
-      const sql = 'select * from masteruser where id=($1)';
+      const sql = 'select id,username, password, firstname,lastname from masteruser where id=($1)';
 
       const result = (await connect).query(sql, [id]);
       const userDb = (await result).rows[0] as UserModel;
@@ -100,7 +100,7 @@ export class UserService {
 
       return { data: userDb, status: 200, message: 'successfully' };
     } catch (ex: any) {
-      return { data: [], status: 500, message: 'Internal Server' };
+      throw new Error(`Could not get user. Error: `+ex);
     }
   }
   public async getAll(model: PagingModel): Promise<ResponseViewModel> {
@@ -108,7 +108,7 @@ export class UserService {
       dotenv.config();
 
       const connect = this.connection();
-      const sql = `select * from masteruser order by firstName limit ($1) offset ($2)`;
+      const sql = `select id,username, password, firstname,lastname from masteruser order by firstName limit ($1) offset ($2)`;
       const page = (model.pageNo - 1) * model.pageSize;
       const result = (await connect).query(sql, [model.pageSize, page]);
       const userDb = (await result).rows as UserModel[];
@@ -122,7 +122,7 @@ export class UserService {
       };
       return { data: response, status: 200, message: 'successfully' };
     } catch (ex: any) {
-      return { data: [], status: 500, message: 'Internal Server' };
+      throw new Error(`Could not get all user. Error: `+ex);
     }
   }
 }
