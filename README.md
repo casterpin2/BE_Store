@@ -26,7 +26,7 @@ Project : Store Store application. There are features such as CRUD products,CURD
     POSTGRES_PASSWORD=123456 
     POSTGRES_DB_TEST=store_test 
     NODE_ENV=dev 
-
+    POSTGRES_DB_PORT=5432
     #Bcrypy
     BCRYPT_PASSWORD=joker 
     SALT_ROUNDS=10
@@ -34,7 +34,7 @@ Project : Store Store application. There are features such as CRUD products,CURD
     #JWT_CREDENTIAL
     ACCESS_TOKEN_SECRET = Access_Token_Secret_#$%_BE_STORE_Authentication
     ACCESS_TOKEN_LIFE = 10m 
-
+    `POSTGRES_DB_PORT` is default 5432
 ## Migrate Database
 - Run `npm run db-up` mirgate for db dev
 - Run `npm run db-down`rest migrate for db dev
